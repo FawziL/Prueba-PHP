@@ -1,1 +1,26 @@
 /node_modules
+/backend/vendor/
+# Composer autoloader
+/backend/composer.lock
+
+# PHPStorm project files
+.idea/
+
+# MacOS system files
+.DS_Store
+
+# Log files
+*.log
+
+# Cache
+/backend/.env
+/backend/var/cache/
+/backend/var/logs/
+/backend/var/tmp/
+
+# Configuration files
+/backend/config/config.php
+
+# Exclude your local environment configuration files
+/backend/.env.local
+/backend/.env.*.local
