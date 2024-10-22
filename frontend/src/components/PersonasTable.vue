@@ -15,29 +15,40 @@
             style="width: 120px; height: 100px;"
             contain
           />
-          <span v-else style="width: 100px; height: 100px;display: flex; align-items: center; justify-content: center;">No image</span>
+          <span v-else style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">No image</span>
         </div>
       </template>
       <template v-slot:body-cell-actions="props">
-        <div style="display: flex; gap: 10px;align-items: center;"> <!-- Espacio entre los botones -->
+        <div style="display: flex; gap: 10px; align-items: center;">
           <q-btn color="primary" label="Editar" @click="editPerson(props.row.id)" />
-          <q-btn color="negative" label="Borrar" @click="deletePerson(props.row.id)" />
+          <q-btn color="negative" label="Borrar" @click="() => confirmDelete(props.row.id)" />
         </div>
       </template>
     </q-table>
+    <DeleteModal ref="modal" @confirm="deletePerson" />
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router'; // Importar useRouter
+import { useRouter } from 'vue-router';
 import { QTableColumn } from 'quasar';
+import DeleteModal from './PersonaDeleteModal.vue';
+
+type DeleteModalRef = {
+  open: () => void;
+  setId: (id: number) => void;
+};
 
 export default defineComponent({
   name: 'PersonasTable',
+  components: {
+    DeleteModal,
+  },
   setup() {
-    const router = useRouter(); // Usar el router
+    const router = useRouter();
     const personas = ref([]);
+    const modal = ref<DeleteModalRef | null>(null); // Usamos el tipo definido aquí
     const columns: QTableColumn[] = [
       { name: 'id', required: true, label: 'ID', align: 'left', field: 'id', sortable: true },
       { name: 'foto', label: 'Foto', align: 'center', field: 'foto' },
@@ -49,8 +60,7 @@ export default defineComponent({
       { name: 'parroquia', label: 'Parroquia', align: 'left', field: 'parroquia' },
       { name: 'telefonos', label: 'Teléfonos', align: 'left', field: 'telefonos' },
       { name: 'correo_electronico', label: 'Correo Electrónico', align: 'left', field: 'correo_electronico' },
-  
-      { name: 'actions', label: 'Acciones', align: 'center', field: 'actions', sortable: false } // Nueva columna para acciones
+      { name: 'actions', label: 'Acciones', align: 'center', field: 'actions', sortable: false }
     ];
 
     const fetchPersonas = async () => {
@@ -72,13 +82,32 @@ export default defineComponent({
       }
     };
 
-    const editPerson = (id:number) => {
+    const editPerson = (id: number) => {
       router.push(`/update/${id}`);
     };
 
-    const deletePerson = (id:number) => {
-      // Implementa la lógica para eliminar la persona
+    const confirmDelete = (id: number) => {
+      modal.value?.open(); 
+      modal.value?.setId(id);
+    };
+
+    const deletePerson = async (id: number) => {
       console.log('Delete ID:', id);
+      try {
+        const response = await fetch(`http://localhost:8080/personas/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          fetchPersonas();
+        } else {
+          console.error('Error al eliminar la persona:', response.status);
+        }
+      } catch (error) {
+        console.error('Error al eliminar la persona:', error);
+      }
     };
 
     onMounted(fetchPersonas);
@@ -87,12 +116,10 @@ export default defineComponent({
       personas,
       columns,
       editPerson,
-      deletePerson
+      confirmDelete,
+      deletePerson,
+      modal,
     };
   }
 });
 </script>
-
-<style scoped>
-/* Opcional: agrega estilos personalizados para la tabla */
-</style>

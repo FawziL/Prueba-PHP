@@ -107,20 +107,23 @@ class PersonaController extends Controller
     
         $formData = $this->request->getPost();
         
-        // Actualiza solo los campos que han sido enviados en el formulario
         foreach ($formData as $key => $value) {
+            if ($key === 'foto') {
+                continue;
+            }
+            // Actualiza otros campos que no están vacíos
             if (!empty($value)) {
                 $data[$key] = $value; 
             }
         }
-        $data['id'] = $id; 
-        $foto = $this->request->getFile('foto'); 
+
+        $foto = $this->request->getFile('foto');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
             $nombreFoto = time() . '_' . $foto->getName();
             $foto->move(WRITEPATH . '../public/uploads', $nombreFoto);
             $data['foto'] = base_url('uploads/' . $nombreFoto);
         }
-        
+  
         try {
             if ($this->personaModel->save($data)) {
                 return $this->response->setJSON(['message' => 'Persona actualizada con éxito', 'data' => $data]);
@@ -135,7 +138,10 @@ class PersonaController extends Controller
 
     public function delete($id)
     {
-        $this->personaModel->delete($id);
+        $persona = $this->personaModel->find($id);
+        if (!$persona) {
+            return $this->response->setStatusCode(404, 'Persona no encontrada');
+        }
         return $this->response->setStatusCode(200, 'Persona eliminada');
     }
 }
