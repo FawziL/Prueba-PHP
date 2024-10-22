@@ -99,10 +99,38 @@ class PersonaController extends Controller
 
     public function update($id)
     {
-        $data = $this->request->getPost();
+        $data = $this->personaModel->find($id);
+    
+        if (!$data) {
+            return $this->response->setStatusCode(404, 'Persona no encontrada');
+        }
+    
+        $formData = $this->request->getPost();
+        
+        // Actualiza solo los campos que han sido enviados en el formulario
+        foreach ($formData as $key => $value) {
+            if (!empty($value)) {
+                $data[$key] = $value; 
+            }
+        }
         $data['id'] = $id; 
-        $this->personaModel->save($data);
-        return $this->response->setStatusCode(200, 'Persona actualizada');
+        $foto = $this->request->getFile('foto'); 
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            $nombreFoto = time() . '_' . $foto->getName();
+            $foto->move(WRITEPATH . '../public/uploads', $nombreFoto);
+            $data['foto'] = base_url('uploads/' . $nombreFoto);
+        }
+        
+        try {
+            if ($this->personaModel->save($data)) {
+                return $this->response->setJSON(['message' => 'Persona actualizada con éxito', 'data' => $data]);
+            } else {
+                $errors = $this->personaModel->errors();
+                return $this->response->setStatusCode(400, 'Errores de validación: ' . json_encode($errors));
+            }
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500, 'Error al actualizar la persona: ' . $e->getMessage());
+        }
     }
 
     public function delete($id)
