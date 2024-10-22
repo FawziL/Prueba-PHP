@@ -12,10 +12,8 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Persona Quasar App
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -28,7 +26,7 @@
         <q-item-label
           header
         >
-          Essential Links
+          Links Personas
         </q-item-label>
 
         <EssentialLink
@@ -55,10 +53,16 @@ defineOptions({
 
 const linksList: EssentialLinkProps[] = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
+    title: 'GetAll Personas',
+    caption: 'trae todas las personas',
     icon: 'school',
     link: '/personas'
+  },
+  {
+    title: 'Create Persona',
+    caption: 'Obtiene los datos del form y almacena una persona',
+    icon: 'school',
+    link: '/create'
   },
 ];
 

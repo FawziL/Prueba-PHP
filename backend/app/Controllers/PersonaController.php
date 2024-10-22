@@ -31,10 +31,70 @@ class PersonaController extends Controller
 
     public function create()
     {
+        //Traigo la info y la foto si te la tengo
         $data = $this->request->getPost();
-        var_dump($data);
-        $this->personaModel->save($data);
-        return $this->response->setStatusCode(201, 'Persona creada');
+        $foto = $this->request->getFile('foto');
+        $rutaFoto = null;
+
+        $camposEsperados = [
+            'cedula',
+            'nacionalidad',
+            'nombres',
+            'apellidos',
+            'fecha_nacimiento',
+            'sexo',
+            'estado_civil',
+            'estado',
+            'municipio',
+            'parroquia',
+            'direccion',
+            'telefonos',
+            'correo_electronico',
+            'cantidad_hijos',
+            'sueldo_actual'
+        ];
+
+        $camposFaltantes = [];
+
+        //confirmar cuales campos estan vacios
+
+        foreach ($camposEsperados as $campo) {
+            if (!isset($data[$campo]) || empty($data[$campo])) {
+                $camposFaltantes[] = $campo;
+            }
+        }
+
+        if (!empty($camposFaltantes)) {
+            return $this->response->setStatusCode(400, 'Campos faltantes')->setJSON([
+                'message' => 'Faltan los siguientes campos:',
+                'campos_faltantes' => $camposFaltantes
+            ]);
+        }
+
+        //ya con que esten todo los datos, confirmo si tengo imafen y la guardo
+
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            // Generar un nombre único para la foto
+            $nombreFoto = time() . '_' . $foto->getName();
+            // Mover el archivo a la carpeta de uploads
+            $foto->move(WRITEPATH . '../public/uploads', $nombreFoto);
+            // Guardar la ruta de la foto
+            $rutaFoto = base_url('uploads/' . $nombreFoto);
+        }
+
+        $data['foto'] = $rutaFoto;
+
+        try {
+            if ($this->personaModel->save($data)) {
+                return $this->response->setJSON(['message' => 'Persona creada con éxito', 'data' => $data]);
+            } else {
+                return $this->response->setStatusCode(400, 'Error al guardar')->setJSON([
+                    'errors' => $this->personaModel->errors()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500, 'Error en el servidor: ' . $e->getMessage());
+        }
     }
 
     public function update($id)
