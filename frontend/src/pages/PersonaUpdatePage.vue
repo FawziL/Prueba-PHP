@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <h2>Crear Persona</h2>
+    <h2>Editar Persona</h2>
     <form @submit.prevent="actualizarPersona">
       <div>
         <label for="cedula">Cédula:</label>
@@ -108,10 +108,11 @@
 </template>
 
 <script>
+import { Notify } from 'quasar'
 export default {
   data() {
     return {
-      ID: null, // Almacenarás el ID aquí
+      ID: null,
       persona: {
         cedula: '',
         nacionalidad: 'Venezolano',
@@ -174,6 +175,17 @@ export default {
         });
         const data = await response.json();
         console.log('Persona actualizada:', data);
+        if (response.ok) {
+            Notify.create({
+              message: data.message,
+              color: 'green', 
+              position: 'top-right',
+              timeout: 2000, 
+            });
+            setTimeout(() => {
+              this.$router.push('/personas');
+            }, 2000); 
+        }
       } catch (error) {
         console.error('Error al actualizar la persona:', error);
       }
@@ -187,13 +199,3 @@ export default {
 };
 
 </script>
-
-<style scoped>
-.form-container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-form div {
-  margin-bottom: 15px;
-}
-</style>

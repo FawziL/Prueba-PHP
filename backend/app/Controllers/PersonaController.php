@@ -86,7 +86,11 @@ class PersonaController extends Controller
 
         try {
             if ($this->personaModel->save($data)) {
-                return $this->response->setJSON(['message' => 'Persona creada con éxito', 'data' => $data]);
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Persona registrada con éxito',
+                    'data' => $data
+                ]);
             } else {
                 return $this->response->setStatusCode(400, 'Error al guardar')->setJSON([
                     'errors' => $this->personaModel->errors()
@@ -126,7 +130,11 @@ class PersonaController extends Controller
   
         try {
             if ($this->personaModel->save($data)) {
-                return $this->response->setJSON(['message' => 'Persona actualizada con éxito', 'data' => $data]);
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Persona actualizada con éxito',
+                    'data' => $data
+                ]);
             } else {
                 $errors = $this->personaModel->errors();
                 return $this->response->setStatusCode(400, 'Errores de validación: ' . json_encode($errors));
@@ -142,6 +150,7 @@ class PersonaController extends Controller
         if (!$persona) {
             return $this->response->setStatusCode(404, 'Persona no encontrada');
         }
+        $this->personaModel->delete($id);
         return $this->response->setStatusCode(200, 'Persona eliminada');
     }
 }

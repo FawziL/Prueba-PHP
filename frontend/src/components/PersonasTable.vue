@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts">
+import { Notify } from 'quasar'
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { QTableColumn } from 'quasar';
@@ -92,7 +93,6 @@ export default defineComponent({
     };
 
     const deletePerson = async (id: number) => {
-      console.log('Delete ID:', id);
       try {
         const response = await fetch(`http://localhost:8080/personas/${id}`, {
           method: 'DELETE',
@@ -101,6 +101,12 @@ export default defineComponent({
           },
         });
         if (response.ok) {
+          Notify.create({
+              message: 'Se ha elimina con éxito la persona',
+              color: 'green', 
+              position: 'top-right',
+              timeout: 2000, 
+            });
           fetchPersonas();
         } else {
           console.error('Error al eliminar la persona:', response.status);

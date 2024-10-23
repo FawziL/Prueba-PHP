@@ -108,6 +108,7 @@
 </template>
 
 <script>
+import { Notify } from 'quasar'
 export default {
   data() {
     return {
@@ -172,6 +173,17 @@ export default {
         });
         const data = await response.json();
         console.log('Persona creada:', data);
+        if (response.ok) {
+            Notify.create({
+              message: data.message,
+              color: 'green', 
+              position: 'top-right',
+              timeout: 2000, 
+            });
+            setTimeout(() => {
+              this.$router.push('/personas');
+            }, 2000); 
+        }
       } catch (error) {
         console.error('Error al crear la persona:', error);
       }
@@ -182,14 +194,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Estilos opcionales para el formulario */
-.form-container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-form div {
-  margin-bottom: 15px;
-}
-</style>

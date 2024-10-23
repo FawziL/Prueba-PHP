@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Persona Quasar App
+          Persona Quasar-Codeigniter4 App
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -52,6 +52,12 @@ defineOptions({
 });
 
 const linksList: EssentialLinkProps[] = [
+  {
+    title: 'Home',
+    caption: '/',
+    icon: 'school',
+    link: '/'
+  },
   {
     title: 'GetAll Personas',
     caption: 'trae todas las personas',

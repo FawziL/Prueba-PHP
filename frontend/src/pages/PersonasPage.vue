@@ -16,7 +16,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style scoped>
-/* Opcional: Estilos personalizados */
-</style>
