@@ -59,7 +59,8 @@ class PersonaController extends Controller
         //confirmar cuales campos estan vacios
 
         foreach ($camposEsperados as $campo) {
-            if (!isset($data[$campo]) || empty($data[$campo])) {
+            // Comprobar si el campo no está presente o, en caso de que no sea numérico, está vacío
+            if (!isset($data[$campo]) || $data[$campo] === null || $data[$campo] === '') {
                 $camposFaltantes[] = $campo;
             }
         }
@@ -116,7 +117,7 @@ class PersonaController extends Controller
                 continue;
             }
             // Actualiza otros campos que no están vacíos
-            if (!empty($value)) {
+            if ($value !== null && $value !== '') {
                 $data[$key] = $value; 
             }
         }
