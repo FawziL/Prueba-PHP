@@ -66,7 +66,7 @@ export default defineComponent({
 
     const fetchPersonas = async () => {
       try {
-        const response = await fetch('http://localhost:8080/personas', {
+        const response = await fetch('http://localhost:8080/api/personas', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export default defineComponent({
 
     const deletePerson = async (id: number) => {
       try {
-        const response = await fetch(`http://localhost:8080/personas/${id}`, {
+        const response = await fetch(`http://localhost:8080/api/personas/${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

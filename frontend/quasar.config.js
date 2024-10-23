@@ -37,7 +37,8 @@ module.exports = configure(function (/* ctx */) {
             lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"'
           }
         }, { server: false }]
-      ]
+      ],
+      publicPath: '/dist/spa/',
     },
 
     devServer: {

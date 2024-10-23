@@ -164,7 +164,7 @@ export default {
       }
 
       try {
-        const response = await fetch('http://localhost:8080/personas', {
+        const response = await fetch('http://localhost:8080/api/personas', {
           method: 'POST',
           body: formData,
           headers: {

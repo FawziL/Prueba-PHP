@@ -166,7 +166,7 @@ export default {
       formData.append('_method', 'PUT');
 
       try {
-        const response = await fetch(`http://localhost:8080/personas/${this.ID}`, {
+        const response = await fetch(`http://localhost:8080/api/personas/${this.ID}`, {
           method: 'POST',
           body: formData,
           headers: {
