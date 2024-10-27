@@ -38,7 +38,8 @@ module.exports = configure(function (/* ctx */) {
           }
         }, { server: false }]
       ],
-      publicPath: '/dist/spa/',
+      publicPath: '/',
+      vueRouterMode: process.env.VITE_VUE_ROUTER_MODE || 'history',
     },
 
     devServer: {

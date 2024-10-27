@@ -24,3 +24,5 @@
 # Exclude your local environment configuration files
 /backend/.env.local
 /backend/.env.*.local
+
+/frontend/.env
